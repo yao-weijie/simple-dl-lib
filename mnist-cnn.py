@@ -1,23 +1,17 @@
-import DLlib.mynn as mynn
 import DLlib.mydata as mydata
+import DLlib.mynn as mynn
 import DLlib.myoptim as myoptim
 
-
-dataset_root = '~/Datasets'
+dataset_root = "~/Datasets"
 train_loader = mydata.DataLoader(
-    dataset=mydata.MNIST(root=dataset_root, train=True),
-    batch_size=1,
-    shuffle=True
+    dataset=mydata.MNIST(root=dataset_root, train=True), batch_size=1, shuffle=True
 )
 test_loader = mydata.DataLoader(
-    dataset=mydata.MNIST(root=dataset_root, train=False),
-    batch_size=500,
-    shuffle=False
+    dataset=mydata.MNIST(root=dataset_root, train=False), batch_size=500, shuffle=False
 )
 
 net = mynn.Sequential(
     mynn.Conv2d(in_chs=1, out_chs=4, kernel_size=3, stride=1, pad=1),  # 28*28
-
     mynn.Flatten(),
     mynn.Linear(in_features=784, out_features=56),
     mynn.ReLU(),
@@ -40,8 +34,8 @@ for epoch in range(train_epochs):
         net.backward(loss_grad)
         optimizer.step()
         optimizer.zero_grad()
-        if (i+1) == 10:
-            break
+        # if (i + 1) == 10:
+        #     break
 
     net.eval()
     acc_sum = 0.0
@@ -49,4 +43,4 @@ for epoch in range(train_epochs):
         output = net(images)
         acc_sum += sum(output.argmax(axis=1) == labels)
     acc = acc_sum / len(test_loader.dataset)
-    print(f'train epoch: {epoch+1}, loss: {loss_sum:.3f}, test acc: {acc:.3f}')
+    print(f"train epoch: {epoch+1}, loss: {loss_sum:.3f}, test acc: {acc:.3f}")

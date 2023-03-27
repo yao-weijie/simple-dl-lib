@@ -19,7 +19,7 @@ class Module(object):
         raise NotImplementedError
 
     def zero_grad(self):
-        """"梯度清零"""
+        """ "梯度清零"""
         raise NotImplementedError
 
     def train(self):
@@ -31,7 +31,7 @@ class Module(object):
         """测试模式"""
         for m in self._modules.values():
             m.training = False
-    
+
     def parameters(self):
         return self._parameters.values()
 
@@ -40,7 +40,7 @@ class Module(object):
         return self.forward(*args)
 
     def __str__(self):
-        return self.__class__.__name__ + '\n'
+        return self.__class__.__name__ + "\n"
 
 
 class Sequential(Module):
@@ -51,20 +51,20 @@ class Sequential(Module):
     def register_modules(self, modules):
         for i, m in enumerate(modules):
             assert isinstance(m, Module)
-            
-            module_name = f'module-{i+1}-{m.__class__.__name__}'
+
+            module_name = f"module-{i+1}-{m.__class__.__name__}"
             self._modules[module_name] = m
 
             for param_key in m._parameters:
-                if 'weight' in param_key:
-                    param_name = f'module-{i+1}-weight'
-                elif 'bias' in param_key:
-                    param_name = f'module-{i+1}-bias'
+                if "weight" in param_key:
+                    param_name = f"module-{i+1}-weight"
+                elif "bias" in param_key:
+                    param_name = f"module-{i+1}-bias"
                 else:
-                    param_name = f'module-{i+1}-{param_key}'
+                    param_name = f"module-{i+1}-{param_key}"
                 self._parameters[param_name] = m._parameters[param_key]
 
-    def forward(self,  x):
+    def forward(self, x):
         for module in self._modules.values():
             x = module(x)
 
@@ -77,7 +77,7 @@ class Sequential(Module):
         return delta
 
     def __str__(self):
-        s = ''
+        s = ""
         for i, (k, v) in enumerate(self._modules.items()):
-            s += f'module-{i+1}-{v}'
+            s += f"module-{i+1}-{v}"
         return s

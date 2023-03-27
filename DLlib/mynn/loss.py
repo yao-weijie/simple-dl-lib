@@ -1,4 +1,5 @@
 import numpy as np
+
 from .basemodule import Module
 
 
@@ -11,11 +12,11 @@ class MSELoss(Module):
         self.input = x
         label = np.reshape(label, (len(label), -1))
         self.label = label
-        self.output = 0.5 * np.sum((x-label) ** 2)# / len(x)
+        self.output = 0.5 * np.sum((x - label) ** 2)  # / len(x)
         return self.output
 
     def backward(self):
-        self.grad_input = (self.input - self.label)# / len(self.input)
+        self.grad_input = self.input - self.label  # / len(self.input)
         return self.grad_input
 
 
@@ -32,10 +33,13 @@ class CrossEntropyLoss(Module):
         self.input = x
         self.label = label
         N = len(label)
-        self.q = np.exp(x) / (np.exp(x).sum(axis=1, keepdims=True) + 1e-20)  # softmax operation
+        # softmax operation
+        eps = 1e-20
+        self.q = np.exp(x) / (np.exp(x).sum(axis=1, keepdims=True) + eps) + eps
+
         log_q = np.log(self.q)
         log_qk = log_q[list(range(N)), label]
-        self.output =  -log_qk.sum()
+        self.output = -log_qk.sum()
 
         return self.output
 

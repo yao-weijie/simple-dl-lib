@@ -17,4 +17,3 @@ class DataLoader(object):
     def __iter__(self):
         for idx in np.array_split(self.indexs, self.split_idx):
             yield self.dataset[self.indexs[idx]]
-        

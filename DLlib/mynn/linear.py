@@ -6,13 +6,13 @@ from .variable import Param
 class Flatten(Module):
     def __init__(self):
         super(Flatten, self).__init__()
-    
+
     def forward(self, x):
         self.input = x
         self.output = np.reshape(x, (len(x), -1))
 
         return self.output
-    
+
     def backward(self, delta):
         self.grad_input = np.reshape(delta, self.input.shape)
 
@@ -26,10 +26,10 @@ class Linear(Module):
         self.in_features = in_features
         self.out_features = out_features
         self.weight = Param(np.random.randn(in_features, out_features) * 0.01)
-        self._parameters['weight'] = self.weight
+        self._parameters["weight"] = self.weight
         if bias:
             self.bias = Param(np.random.randn(1, out_features) * 0.01)
-            self._parameters['bias'] = self.bias
+            self._parameters["bias"] = self.bias
 
     def forward(self, x):
         self.input = x
@@ -37,7 +37,7 @@ class Linear(Module):
             self.output = np.matmul(x, self.weight) + self.bias
         else:
             self.output = np.matmul(x, self.weight)
-        
+
         return self.output
 
     def backward(self, delta):
@@ -50,5 +50,4 @@ class Linear(Module):
 
     def __str__(self):
         classname = self.__class__.__name__
-        return f'{classname}: in_features={self.in_features}, out_features={self.out_features}, bias={self.bias_}\n'
-
+        return f"{classname}: in_features={self.in_features}, out_features={self.out_features}, bias={self.bias_}\n"

@@ -1,10 +1,10 @@
 import numpy as np
 from scipy import signal
+
 from .basemodule import Module
 from .variable import Param
 
-
-__all__ = ['Conv2d']
+__all__ = ["Conv2d"]
 
 
 def rotate180(w):
@@ -20,24 +20,33 @@ def fftconvolve(x, w, rotate=False):
     """
     if rotate is False:
         w = rotate180(w)
-    return signal.fftconvolve(x, w, mode='valid', axes=(-2, -1))
+    return signal.fftconvolve(x, w, mode="valid", axes=(-2, -1))
 
 
 class Conv2d(Module):
-    def __init__(self, in_chs: int, out_chs: int, kernel_size: int,
-                        stride: int = 1, pad: int = 0, bias: bool = True):
+    def __init__(
+        self,
+        in_chs: int,
+        out_chs: int,
+        kernel_size: int,
+        stride: int = 1,
+        pad: int = 0,
+        bias: bool = True,
+    ):
         super(Conv2d, self).__init__()
-        assert kernel_size - pad -1 >= 0, 'padding太大了!'
+        assert kernel_size - pad - 1 >= 0, "padding太大了!"
         self.in_chs = int(in_chs)
         self.out_chs = int(out_chs)
         self.kernel_size = int(kernel_size)
         self.stride = int(stride)
         self.pad = int(pad)
-        self.weight = Param(np.random.randn(out_chs, in_chs, kernel_size, kernel_size) * 0.01)
-        self._parameters['weight'] = self.weight
+        self.weight = Param(
+            np.random.randn(out_chs, in_chs, kernel_size, kernel_size) * 0.01
+        )
+        self._parameters["weight"] = self.weight
         if bias:
             self.bias = Param(np.random.randn(out_chs) * 0.01)  # bias是一维数组
-            self._parameters['bias'] = self.bias
+            self._parameters["bias"] = self.bias
 
     def forward(self, x):
         assert x.ndim == 4, "输入x不是四维的！"
@@ -50,7 +59,7 @@ class Conv2d(Module):
 
         # pad为0相当于没有填充，大于0就填充
         self.input_pad = np.pad(x, ((0, 0), (0, 0), (pad, pad), (pad, pad)))
-        self.raw_out = np.zeros((N, out_chs, H+2*pad-K+1, W+2*pad-K+1))
+        self.raw_out = np.zeros((N, out_chs, H + 2 * pad - K + 1, W + 2 * pad - K + 1))
 
         for n in range(N):
             for k in range(out_chs):
@@ -80,24 +89,28 @@ class Conv2d(Module):
         for k in range(out_chs):
             for n in range(N):
                 # out形状in_chs　*　K　*　K
-                out = fftconvolve(self.input_pad[n], raw_delta[n, k:k+1])
+                out = fftconvolve(self.input_pad[n], raw_delta[n, k : k + 1])
                 self.weight.grad[k] += out
 
         # 计算x的梯度
         self.grad_input = np.zeros_like(self.input, dtype=float)
-        raw_delta_pad = np.pad(raw_delta, ((0, 0), (0, 0), (K-pad-1, K-pad-1), (K-pad-1, K-pad-1)))
-        
+        raw_delta_pad = np.pad(
+            raw_delta,
+            ((0, 0), (0, 0), (K - pad - 1, K - pad - 1), (K - pad - 1, K - pad - 1)),
+        )
+
         for n in range(N):
             for k in range(out_chs):
-                out = fftconvolve(raw_delta_pad[n, k:k+1], self.weight[k], rotate=True)
+                out = fftconvolve(
+                    raw_delta_pad[n, k : k + 1], self.weight[k], rotate=True
+                )
                 self.grad_input[n] += out
 
         return self.grad_input
 
-
     def __str__(self):
         classname = self.__class__.__name__
-        return f'{classname}: in_chs={self.in_chs}, out_chs={self.out_chs}, kernel_size={self.kernel_size}, stride={self.stride}, pad={self.pad}\n'
+        return f"{classname}: in_chs={self.in_chs}, out_chs={self.out_chs}, kernel_size={self.kernel_size}, stride={self.stride}, pad={self.pad}\n"
 
 
 # if __name__ == "__main__":

@@ -4,18 +4,17 @@ from .variable import Param
 
 
 class Dropout(Module):
-    def __init__(self, p: float = 0.5,
-                       inplace: bool = False):
+    def __init__(self, p: float = 0.5, inplace: bool = False):
         super(Dropout, self).__init__()
         self.p = p
         self.inplace = inplace
         self.mask = None
 
-    def forward(self,  x):
+    def forward(self, x):
         self.input = x
         if self.training:
             shape = self.input.shape
-            self.mask = np.random.binomial(n=1, p=1-self.p, size=shape)
+            self.mask = np.random.binomial(n=1, p=1 - self.p, size=shape)
             self.output = self.mask * self.input / (1 - self.p)
             if self.inplace:
                 self.input = self.mask * self.input
@@ -27,10 +26,10 @@ class Dropout(Module):
     def backward(self, delta):
         self.grad_input = delta * self.mask
         return self.grad_input
-    
+
     def __str__(self):
         classname = self.__class__.__name__
-        return f'{classname}: p={self.p}\n'
+        return f"{classname}: p={self.p}\n"
 
 
 class BatchNorm2d(Module):
@@ -39,11 +38,11 @@ class BatchNorm2d(Module):
         self.mean = None
         self.var = None
         # TODO: 维数待定
-        self.gamma = Param(np.random.randn(1)*0.01, requires_grad=True)
-        self.beta = Param(np.random.randn(1)*0.01, requires_grad=True)
+        self.gamma = Param(np.random.randn(1) * 0.01, requires_grad=True)
+        self.beta = Param(np.random.randn(1) * 0.01, requires_grad=True)
         self.delta = 1e-6
-        self._parameters['gamma'] = self.gamma
-        self._parameters['beta'] = self.beta
+        self._parameters["gamma"] = self.gamma
+        self._parameters["beta"] = self.beta
 
     def forward(self, x):
         if self.training and (len(x) != 1):
@@ -60,12 +59,12 @@ class BatchNorm2d(Module):
             self.grad_input = delta
         else:
             self.grad_input = delta
-        
+
         return self.grad_input
 
     def train(self):
         self.training = True
-    
+
     def eval(self):
         self.training = False
 
