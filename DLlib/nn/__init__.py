@@ -1,10 +1,9 @@
-from .basemodule import *
 from .activation import *
+from .basemodule import *
 from .conv import *
+from .initialize import *
 from .linear import *
 from .loss import *
 from .pool import *
 from .regularization import *
-
-from .init import *
 from .variable import *

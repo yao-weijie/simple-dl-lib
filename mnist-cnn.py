@@ -1,6 +1,6 @@
 import DLlib.mydata as mydata
-import DLlib.mynn as mynn
-import DLlib.myoptim as myoptim
+import DLlib.nn as nn
+import DLlib.optim as optim
 
 dataset_root = "~/Datasets"
 train_loader = mydata.DataLoader(
@@ -10,16 +10,16 @@ test_loader = mydata.DataLoader(
     dataset=mydata.MNIST(root=dataset_root, train=False), batch_size=500, shuffle=False
 )
 
-net = mynn.Sequential(
-    mynn.Conv2d(in_chs=1, out_chs=4, kernel_size=3, stride=1, pad=1),  # 28*28
-    mynn.Flatten(),
-    mynn.Linear(in_features=784, out_features=56),
-    mynn.ReLU(),
-    mynn.Linear(in_features=56, out_features=10),
+net = nn.Sequential(
+    nn.Conv2d(in_chs=1, out_chs=4, kernel_size=3, stride=1, pad=1),  # 28*28
+    nn.Flatten(),
+    nn.Linear(in_features=784, out_features=56),
+    nn.ReLU(),
+    nn.Linear(in_features=56, out_features=10),
 )
 
-loss_fn = mynn.CrossEntropyLoss()
-optimizer = myoptim.SGD(net.parameters(), lr=0.01)
+loss_fn = nn.CrossEntropyLoss()
+optimizer = optim.SGD(net.parameters(), lr=0.01)
 
 train_epochs = 20
 net.train()

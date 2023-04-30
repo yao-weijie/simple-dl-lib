@@ -1,10 +1,11 @@
 import numpy as np
-from .dataset import NdarrayDataset
+
+from .dataset import ArrayDataset
 
 
 class DataLoader(object):
     def __init__(self, dataset, batch_size, shuffle=True):
-        assert isinstance(dataset, NdarrayDataset)
+        assert isinstance(dataset, ArrayDataset)
 
         self.dataset = dataset
         self.batch_size = batch_size

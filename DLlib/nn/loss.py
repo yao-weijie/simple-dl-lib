@@ -34,7 +34,7 @@ class CrossEntropyLoss(Module):
         self.label = label
         N = len(label)
         # softmax operation
-        eps = 1e-20
+        eps = 1e-10
         self.q = np.exp(x) / (np.exp(x).sum(axis=1, keepdims=True) + eps) + eps
 
         log_q = np.log(self.q)

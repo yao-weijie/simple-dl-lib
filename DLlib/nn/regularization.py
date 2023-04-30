@@ -1,4 +1,5 @@
 import numpy as np
+
 from .basemodule import Module
 from .variable import Param
 
@@ -32,6 +33,11 @@ class Dropout(Module):
         return f"{classname}: p={self.p}\n"
 
 
+class BatchNorm1d(Module):
+    def __init__(self):
+        super(BatchNorm1d, self).__init__()
+
+
 class BatchNorm2d(Module):
     def __init__(self):
         super(BatchNorm2d, self).__init__()
@@ -61,12 +67,6 @@ class BatchNorm2d(Module):
             self.grad_input = delta
 
         return self.grad_input
-
-    def train(self):
-        self.training = True
-
-    def eval(self):
-        self.training = False
 
 
 if __name__ == "__main__":

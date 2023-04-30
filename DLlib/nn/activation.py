@@ -1,4 +1,5 @@
 import numpy as np
+
 from .basemodule import Module
 
 
@@ -10,7 +11,7 @@ class Sigmod(Module):
 
     def forward(self, x):
         self.input = x
-        self.output = 1.0 / (1.0 + np.exp(-x))
+        self.output = 1.0 / (1.0 + np.exp(-x)) + 1e-10
 
         return self.output
 

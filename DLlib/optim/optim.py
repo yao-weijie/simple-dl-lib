@@ -1,9 +1,5 @@
 class SGD(object):
-    def __init__(
-        self,
-        parameters,
-        lr,
-    ):
+    def __init__(self, parameters, lr):
         super(SGD, self).__init__()
         self.parameters = parameters
         self.lr = lr

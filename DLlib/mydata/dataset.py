@@ -2,7 +2,7 @@ import numpy as np
 import torchvision
 
 
-class NdarrayDataset(object):
+class ArrayDataset(object):
     def __init__(self, data: np.ndarray, labels: np.ndarray):
         assert len(data) == len(labels)
         self.data = data
@@ -20,7 +20,7 @@ def MNIST(root, train=True):
     images = mnist.data.numpy() / 255  # N*28*28
     labels = mnist.targets.numpy()  # N,
     images = np.expand_dims(images, axis=1)  # N*1*18*28
-    return NdarrayDataset(images, labels)
+    return ArrayDataset(images, labels)
 
 
 def FashionMNIST(root, train=True):
@@ -30,4 +30,4 @@ def FashionMNIST(root, train=True):
     images = fashionmnist.data.numpy() / 255  # N*28*28
     labels = fashionmnist.targets.numpy()  # N,
     images = np.expand_dims(images, axis=1)  # N*1*18*28
-    return NdarrayDataset(images, labels)
+    return ArrayDataset(images, labels)

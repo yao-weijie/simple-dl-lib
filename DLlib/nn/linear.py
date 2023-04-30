@@ -1,4 +1,5 @@
 import numpy as np
+
 from .basemodule import Module
 from .variable import Param
 
